@@ -11,7 +11,17 @@ setup:
 		-w /var/www/html \
 		laravelsail/php84-composer:latest \
 		composer install --ignore-platform-reqs
-	@echo "Setup complete! Now run 'make up' to start the application."
+	@echo "Setup complete! Starting the application..."
+	@$(MAKE) up
+	@echo "Waiting for container to be ready..."
+	sleep 5
+	@echo "Generating app key and running migrations..."
+	./vendor/bin/sail artisan key:generate
+	./vendor/bin/sail artisan migrate --force
+	@echo "Installing and building Node.js assets..."
+	./vendor/bin/sail npm install
+	./vendor/bin/sail npm run build
+	@echo "Application setup is fully complete! Access it at http://localhost"
 
 # Target untuk menyalakan Laravel Sail (Docker)
 up:

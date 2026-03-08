@@ -1,5 +1,7 @@
 @echo off
 
+set WWWUSER=1000
+set WWWGROUP=1000
 if "%~1"=="setup" goto setup
 if "%~1"=="up" goto up
 if "%~1"=="down" goto down
@@ -19,8 +21,18 @@ docker run --rm ^
     -w /var/www/html ^
     laravelsail/php84-composer:latest ^
     composer install --ignore-platform-reqs
-echo Setup complete! Starting the application...
-goto up
+echo Setup complete. Starting containers...
+docker compose up -d
+echo Waiting a few seconds for database to initialize...
+timeout /t 5 /nobreak >nul
+echo Generating app key and running migrations...
+docker compose exec laravel.test php artisan key:generate
+docker compose exec laravel.test php artisan migrate --force
+echo Installing NPM dependencies and building assets...
+docker compose exec laravel.test npm install
+docker compose exec laravel.test npm run build
+echo Setup fully complete! Application is running at http://localhost
+goto :eof
 
 :up
 echo Starting the application...
