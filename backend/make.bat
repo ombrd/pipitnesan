@@ -19,31 +19,31 @@ docker run --rm ^
     -w /var/www/html ^
     laravelsail/php84-composer:latest ^
     composer install --ignore-platform-reqs
-echo Setup complete! Now run 'make up' to start the application.
-goto :eof
+echo Setup complete! Starting the application...
+goto up
 
 :up
 echo Starting the application...
-call vendor\bin\sail up -d
+docker compose up -d
 echo Application is running at http://localhost
 goto :eof
 
 :down
 echo Stopping the application...
-call vendor\bin\sail down
+docker compose down
 goto :eof
 
 :restart
 echo Restarting the application...
-call vendor\bin\sail down
-call vendor\bin\sail up -d
+docker compose down
+docker compose up -d
 goto :eof
 
 :shell
-call vendor\bin\sail shell
+docker compose exec laravel.test bash
 goto :eof
 
 :share
-echo Sharing application via Ngrok tunnel...
-call vendor\bin\sail share
+echo Sharing application via Ngrok tunnel requires manual execution of Sail on Windows.
+echo Try running: wsl ./vendor/bin/sail share
 goto :eof
