@@ -26,7 +26,9 @@ Karena folder `vendor` tidak disertakan di dalam repositori Git, dan Anda mungki
 make setup
 ```
 
-Perintah di atas akan secara otomatis menyalin `.env.example` ke `.env` (jika belum ada) dan menggunakan bantuan Docker sementara untuk menginstal **Composer dependencies** secara instan.
+*(Catatan untuk pengguna Windows: Anda dapat menjalankan perintah yang sama di Command Prompt karena kami telah menyediakan file `make.bat` pengganti Makefile).*
+
+Perintah di atas akan secara otomatis menyalin `.env.example` ke `.env` (jika belum ada), melakukan intalasi **Composer dependencies**, men-_generate_ APP_KEY, menjalankan migrasi database otomatis, serta mem-_build_ aset *frontend* Vite secara instan menggunakan bantuan Docker.
 
 ### 2. Nyalakan Docker Container (Sail)
 

@@ -10,7 +10,19 @@ use Illuminate\Http\Request;
 class BookingController extends Controller
 {
     /**
-     * Get current member's bookings
+     * Deskripsi singkat:
+     * Mengambil daftar seluruh booking jadwal Personal Trainer (PT) milik member yang sedang login.
+     * Data yang dikembalikan sudah termasuk relasi ke jadwal dan data pelatih (trainer).
+     *
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi array daftar booking.
+     *
+     * Contoh penggunaan:
+     * GET /api/bookings
+     * Headers: Authorization: Bearer <token>
      */
     public function index()
     {
@@ -27,7 +39,25 @@ class BookingController extends Controller
     }
 
     /**
-     * Book a PT Schedule
+     * Deskripsi singkat:
+     * Membuat booking baru untuk jadwal PT tertentu atas nama member yang sedang login.
+     * Metode ini melakukan serangkaian validasi: status membership harus aktif, jadwal tidak boleh di masa lalu,
+     * memastikan jadwal belum penuh (kuota), dan mencegah duplikasi booking di jadwal yang sama.
+     *
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'pt_schedule_id' (integer).
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berupa data booking yang berhasil dibuat (kode 201),
+     *                                       atau pesan error yang sesuai (kode 403, 422, atau 409).
+     *
+     * Exception:
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika `pt_schedule_id` yang di-*request* tidak ada di database.
+     *
+     * Contoh penggunaan:
+     * POST /api/bookings
+     * Headers: Authorization: Bearer <token>
+     * Body JSON: { "pt_schedule_id": 5 }
      */
     public function store(Request $request)
     {
@@ -81,7 +111,27 @@ class BookingController extends Controller
     }
         
     /**
-     * Cancel a PT Schedule Booking
+     * Deskripsi singkat:
+     * Membatalkan booking jadwal PT yang telah dilakukan oleh member yang sedang login.
+     * Proses ini membutuhkan alasan pembatalan dan hanya diizinkan untuk dibatalkan maksimal
+     * 1 jam sebelum jadwal *schedule* terkait resmi dimulai.
+     *
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'cancel_reason' (string).
+     * @param  int  $id  Primary Key (ID) dari data `PtBooking` yang ingin dibatalkan.
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi status keberhasilan pembatalan, 
+     *                                       atau pesan error validasi operasional (kode 400).
+     *
+     * Exception:
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException Jika ID booking tidak ditemukan, atau jika
+     *                                                              booking tersebut bukan milik member yang sedang login.
+     *
+     * Contoh penggunaan:
+     * POST /api/bookings/15/cancel
+     * Headers: Authorization: Bearer <token>
+     * Body JSON: { "cancel_reason": "Saya sedang tidak enak badan" }
      */
     public function cancel(Request $request, $id)
     {

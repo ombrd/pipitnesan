@@ -10,6 +10,21 @@ use App\Models\ActivityLog;
 
 class QrController extends Controller
 {
+    /**
+     * Deskripsi singkat:
+     * Menghasilkan token QR untuk keperluan absensi manual (sebagai alternatif `generateQR` pada AuthController).
+     * Token ini disimpan dalam cache dengan masa berlaku selama 3 menit.
+     *
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi string token QR acak dan masa berlaku.
+     *
+     * Contoh penggunaan:
+     * GET /api/qr/generate
+     * Headers: Authorization: Bearer <token>
+     */
     public function generate(Request $request)
     {
         $member = $request->user();
@@ -29,6 +44,21 @@ class QrController extends Controller
         ]);
     }
 
+    /**
+     * Deskripsi singkat:
+     * Memindai dan memvalidasi token QR absensi yang telah di-generate. 
+     * Jika valid, akan mencatat kehadiran (ActivityLog action 'gym_attendance') untuk member tersebut.
+     *
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'qr_token' (string).
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON sukses (kode 200) atau error kedaluwarsa (kode 400).
+     *
+     * Contoh penggunaan:
+     * POST /api/qr/scan
+     * Body JSON: { "qr_token": "a1b2c3d4-e5f6-7890-..." }
+     */
     public function scan(Request $request)
     {
         $request->validate([

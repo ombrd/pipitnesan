@@ -10,7 +10,18 @@ use Illuminate\Http\Request;
 class PTController extends Controller
 {
     /**
-     * Get a list of active personal trainers (filtered by branch optionally).
+     * Deskripsi singkat:
+     * Mengambil daftar seluruh Personal Trainer (PT) yang berstatus aktif. 
+     * Hasilnya dapat difilter berdasarkan cabang (branch_id) jika parameter tersebut diberikan.
+     *
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. (Opsional) Membutuhkan 'branch_id'.
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi array data Personal Trainer.
+     *
+     * Contoh penggunaan:
+     * GET /api/pt?branch_id=1
      */
     public function index(Request $request)
     {
@@ -30,7 +41,21 @@ class PTController extends Controller
     }
 
     /**
-     * Get schedules for a specific PT.
+     * Deskripsi singkat:
+     * Mengambil jadwal-jadwal (schedule) yang tersedia untuk seorang Personal Trainer (PT) spesifik.
+     * Jadwal yang dikembalikan hanya jadwal yang belum berlalu (mulai dari hari ini), 
+     * memiliki sisa kuota, dan belum pernah di-booking (aktif) oleh member yang sedang login.
+     *
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. (Opsional) 'date' (YYYY-MM-DD) untuk filter tanggal.
+     * @param  int  $id  Primary Key (ID) dari `PersonalTrainer`.
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi array daftar jadwal PT lengkap dengan sisa kuota.
+     *
+     * Contoh penggunaan:
+     * GET /api/pt/5/schedules?date=2024-05-10
+     * Headers: Authorization: Bearer <token>
      */
     public function schedules(Request $request, $id)
     {

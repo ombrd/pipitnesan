@@ -11,9 +11,18 @@ class AuthController extends Controller
 {
 
     /**
-     * Get a JWT via given credentials.
+     * Deskripsi singkat:
+     * Melakukan proses otentikasi (login) untuk member menggunakan JWT.
+     * 
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'member_number' dan 'password'.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token JWT jika sukses, atau error 401 jika gagal.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/login
+     * Body JSON: { "member_number": "MEMBER-001", "password": "password123" }
      */
     public function login(Request $request)
     {
@@ -32,9 +41,19 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a new member.
+     * Deskripsi singkat:
+     * Mendaftarkan member baru ke dalam sistem dan menandainya sebagai member aktif 
+     * berdasarkan durasi promosi yang dipilih.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien berisi data registrasi member.
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token JWT member baru.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/register
+     * Body JSON: { "name": "Budi", "email": "budi@email.com", ... }
      */
     public function register(Request $request)
     {
@@ -86,9 +105,19 @@ class AuthController extends Controller
     }
 
     /**
-     * Update the authenticated member's profile.
+     * Deskripsi singkat:
+     * Memperbarui profil data dari member yang saat ini sedang login.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Parameter:
+     * @param  \Illuminate\Http\Request  $request  Objek request klien berisi field-field data yang ingin diubah.
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi data profil user yang sudah diperbarui.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/update-profile
+     * Headers: Authorization: Bearer <token>
+     * Body JSON: { "phone": "08123456789" }
      */
     public function updateProfile(Request $request)
     {
@@ -125,9 +154,18 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User.
+     * Deskripsi singkat:
+     * Mendapatkan data profil dari member yang saat ini sedang login beserta status membershipnya.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi data user yang tervalidasi.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/me
+     * Headers: Authorization: Bearer <token>
      */
     public function me()
     {
@@ -135,9 +173,19 @@ class AuthController extends Controller
     }
 
     /**
-     * Log the user out (Invalidate the token).
+     * Deskripsi singkat:
+     * Melakukan proses logout untuk member yang sedang aktif, yaitu membuat token JWT saat ini 
+     * menjadi tidak valid (invalidated).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON yang mengkonfirmasi proses logout berhasil.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/logout
+     * Headers: Authorization: Bearer <token>
      */
     public function logout()
     {
@@ -147,9 +195,18 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh a token.
+     * Deskripsi singkat:
+     * Memperbarui (refresh) token JWT yang sudah ada dan akan kedaluwarsa, menjadi token baru dengan masa aktif yang baru.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT lama dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token JWT yang baru di-refresh.
+     *
+     * Contoh penggunaan:
+     * POST /api/auth/refresh
+     * Headers: Authorization: Bearer <token>
      */
     public function refresh()
     {
@@ -157,7 +214,19 @@ class AuthController extends Controller
     }
 
     /**
-     * Generate QR String for Attendance
+     * Deskripsi singkat:
+     * Menghasilkan *QR Code* absensi dinamis (yang berisi custom JWT Payload) untuk member yang sedang login. 
+     * Validasi status member harus aktif terlebih dahulu. QR Code ini hanya valid selama 1 menit.
+     *
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token otentikasi JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token QR untuk di-*render* pada aplikasi mobile.
+     *
+     * Contoh penggunaan:
+     * GET /api/auth/generate-qr
+     * Headers: Authorization: Bearer <token>
      */
     public function generateQR()
     {

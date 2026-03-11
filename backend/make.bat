@@ -2,6 +2,7 @@
 
 set WWWUSER=1000
 set WWWGROUP=1000
+set PWD=%cd%
 if "%~1"=="setup" goto setup
 if "%~1"=="up" goto up
 if "%~1"=="down" goto down
@@ -26,11 +27,11 @@ docker compose up -d
 echo Waiting a few seconds for database to initialize...
 timeout /t 5 /nobreak >nul
 echo Generating app key and running migrations...
-docker compose exec laravel.test php artisan key:generate
-docker compose exec laravel.test php artisan migrate --force
+docker compose exec -u sail laravel.test php artisan key:generate
+docker compose exec -u sail laravel.test php artisan migrate --force
 echo Installing NPM dependencies and building assets...
-docker compose exec laravel.test npm install
-docker compose exec laravel.test npm run build
+docker compose exec -u sail laravel.test npm install
+docker compose exec -u sail laravel.test npm run build
 echo Setup fully complete! Application is running at http://localhost
 goto :eof
 
@@ -52,7 +53,7 @@ docker compose up -d
 goto :eof
 
 :shell
-docker compose exec laravel.test bash
+docker compose exec -u sail laravel.test bash
 goto :eof
 
 :share

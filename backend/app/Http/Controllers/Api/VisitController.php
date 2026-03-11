@@ -9,7 +9,19 @@ use Illuminate\Http\Request;
 class VisitController extends Controller
 {
     /**
-     * Get current member's visit/attendance history
+     * Deskripsi singkat:
+     * Mengambil riwayat kunjungan (absensi gym) belonging ke member yang sedang login.
+     * Data diambil dari `ActivityLog` dengan aksi spesifik 'gym_attendance'.
+     *
+     * Parameter:
+     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     *
+     * Return value:
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi array riwayat absensi terbaru.
+     *
+     * Contoh penggunaan:
+     * GET /api/visits
+     * Headers: Authorization: Bearer <token>
      */
     public function index()
     {
