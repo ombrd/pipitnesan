@@ -4,11 +4,27 @@ import { Text, Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import api from '../services/api';
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Check-In yang menghasilkan QR Code dinamis untuk absensi member.
+ * QR Code ini memiliki masa berlaku terbatas (60 detik) dan akan diperbarui secara otomatis.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Check-In.
+ */
 export default function CheckInScreen() {
     const [qrData, setQrData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState(0);
 
+    /**
+     * Deskripsi singkat:
+     * Mengambil data token QR Code baru dari server backend.
+     * Token ini nantinya akan di-render menjadi QR Code menggunakan library react-native-qrcode-svg.
+     *
+     * Contoh penggunaan:
+     * fetchQRCode() dipicu saat layar pertama kali dibuka atau saat timer habis.
+     */
     const fetchQRCode = async () => {
         setLoading(true);
         try {

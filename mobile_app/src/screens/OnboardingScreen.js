@@ -10,6 +10,14 @@ import RenderItem from "../components/Onboarding/OnboardingItem";
 import Pagination from "../components/Onboarding/Pagination";
 import CustomButton from "../components/Onboarding/CustomButton";
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Onboarding yang menampilkan slider perkenalan aplikasi kepada pengguna baru.
+ * Menggunakan library react-native-reanimated untuk animasi scrolling dan transisi antar slide.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Onboarding.
+ */
 export default function OnboardingScreen() {
     const flatListRef = useAnimatedRef();
     const x = useSharedValue(0);

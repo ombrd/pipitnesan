@@ -4,6 +4,17 @@ import { Text, List, Button, Avatar, Divider, Dialog, Portal } from 'react-nativ
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Profil yang menampilkan informasi ringkas user dan pengaturan akun.
+ * Memberikan akses untuk edit profil, membersihkan cache lokal, dan melakukan logout.
+ *
+ * Parameter:
+ * @param {Object} navigation Objek navigasi dari React Navigation.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Profil.
+ */
 export default function ProfileScreen({ navigation }) {
     const [userData, setUserData] = useState(null);
     const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
@@ -14,6 +25,10 @@ export default function ProfileScreen({ navigation }) {
         }, [])
     );
 
+    /**
+     * Deskripsi singkat:
+     * Mengambil data profil terbaru dari member yang sedang login melalui endpoint /me.
+     */
     const fetchUserProfile = async () => {
         try {
             const response = await api.get('/me');
@@ -43,6 +58,11 @@ export default function ProfileScreen({ navigation }) {
         setLogoutDialogVisible(true);
     };
 
+    /**
+     * Deskripsi singkat:
+     * Melakukan proses konfirmasi logout dengan memanggil API backend dan menghapus token lokal.
+     * Setelah token dihapus, user akan diarahkan kembali ke layar Login.
+     */
     const confirmLogout = async () => {
         setLogoutDialogVisible(false);
         try {

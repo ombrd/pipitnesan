@@ -11,6 +11,11 @@ const EmptyState = ({ message }) => (
     </View>
 );
 
+/**
+ * Deskripsi singkat:
+ * Komponen Tab yang menampilkan daftar riwayat booking Personal Trainer (PT) milik user.
+ * Pengguna dapat melihat status booking dan membatalkan pesanan yang akan datang (future booking).
+ */
 const BookingsTab = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -40,6 +45,14 @@ const BookingsTab = () => {
         setCancelDialogVisible(true);
     };
 
+    /**
+     * Deskripsi singkat:
+     * Melakukan pembatalan booking PT ke server backend dengan alasan tertentu.
+     * Setelah sukses, daftar booking akan diperbarui secara otomatis.
+     *
+     * Contoh penggunaan:
+     * confirmCancel() dipicu saat user menekan tombol konfirmasi pada dialog pembatalan.
+     */
     const confirmCancel = async () => {
         if (!cancelReason.trim()) {
             return alert("Please provide a reason for cancellation.");
@@ -124,6 +137,11 @@ const BookingsTab = () => {
     );
 };
 
+/**
+ * Deskripsi singkat:
+ * Komponen Tab yang menampilkan daftar riwayat kunjungan (visit history) user ke gym.
+ * Data diambil dari server dan disusun berdasarkan tanggal kunjungan terbaru.
+ */
 const VisitsTab = () => {
     const [visits, setVisits] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -168,6 +186,14 @@ const renderScene = SceneMap({
     second: VisitsTab,
 });
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Aktivitas utama yang menggunakan TabView untuk navigasi antara Riwayat Booking dan Riwayat Kunjungan.
+ * Mengintegrasikan SegmentedButtons untuk kontrol tab yang lebih modern.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Aktivitas.
+ */
 export default function ActivityScreen() {
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);

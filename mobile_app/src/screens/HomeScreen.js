@@ -5,6 +5,17 @@ import { Calendar } from 'react-native-calendars';
 import { format } from 'date-fns';
 import api from '../services/api';
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Dashboard utama (Home) yang menampilkan daftar cabang, trainer, dan jadwal booking.
+ * Memberikan fitur untuk memilih cabang, trainer, dan melakukan reservasi jadwal latihan.
+ *
+ * Parameter:
+ * @param {Object} navigation Objek navigasi dari React Navigation.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Home.
+ */
 export default function HomeScreen({ navigation }) {
     const [branches, setBranches] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
@@ -21,6 +32,11 @@ export default function HomeScreen({ navigation }) {
         fetchBranches();
     }, []);
 
+    /**
+     * Deskripsi singkat:
+     * Mengambil daftar cabang yang tersedia dari server backend.
+     * Secara default akan memilih cabang pertama setelah data berhasil diambil.
+     */
     const fetchBranches = async () => {
         try {
             const response = await api.get('/branches');
@@ -42,6 +58,13 @@ export default function HomeScreen({ navigation }) {
         fetchTrainers(branch.id);
     };
 
+    /**
+     * Deskripsi singkat:
+     * Mengambil daftar Personal Trainer (PT) yang bertugas di cabang tertentu.
+     *
+     * Parameter:
+     * @param {number} branchId ID cabang yang dipilih.
+     */
     const fetchTrainers = async (branchId) => {
         try {
             const response = await api.get(`/pts?branch_id=${branchId}`);
@@ -84,6 +107,14 @@ export default function HomeScreen({ navigation }) {
         setBookingDialogVisible(true);
     }
 
+    /**
+     * Deskripsi singkat:
+     * Melakukan proses booking jadwal PT ke server backend.
+     * Akan menampilkan notifikasi sukses/gagal setelah proses selesai.
+     *
+     * Contoh penggunaan:
+     * confirmBookSchedule() dipicu setelah user menekan tombol konfirmasi di Dialog.
+     */
     const confirmBookSchedule = async () => {
         setBookingDialogVisible(false);
         try {

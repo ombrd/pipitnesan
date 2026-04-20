@@ -9,6 +9,17 @@ import api from '../services/api';
 
 const db = SQLite.openDatabase({ name: 'pipitnesan.db', location: 'default' }, () => { }, error => console.log(error));
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Login yang menangani proses otentikasi user menggunakan Nomor Anggota dan Password.
+ * Mendukung fitur login cepat menggunakan biometrik (Fingerprint/FaceID) dan penyimpanan sesi lokal menggunakan SQLite.
+ *
+ * Parameter:
+ * @param {Object} navigation Objek navigasi dari React Navigation untuk berpindah antar layar.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Login.
+ */
 export default function LoginScreen({ navigation }) {
     const [memberNumber, setMemberNumber] = useState('');
     const [password, setPassword] = useState('');
@@ -34,6 +45,14 @@ export default function LoginScreen({ navigation }) {
             .catch(error => console.log('biometrics error', error));
     }, []);
 
+    /**
+     * Deskripsi singkat:
+     * Menangani proses login manual dengan mengirimkan kredensial ke API backend.
+     * Jika sukses, token akan disimpan ke global state dan database SQLite lokal.
+     *
+     * Contoh penggunaan:
+     * handleLogin() dipicu saat tombol "LOG IN" ditekan.
+     */
     const handleLogin = async () => {
         if (!memberNumber || !password) {
             setErrorMessage("Please enter both Member Number and Password.");
@@ -66,6 +85,14 @@ export default function LoginScreen({ navigation }) {
         }
     };
 
+    /**
+     * Deskripsi singkat:
+     * Melakukan otentikasi menggunakan biometrik perangkat yang tersedia.
+     * Jika verifikasi berhasil, aplikasi akan mengambil token yang tersimpan di SQLite untuk login otomatis.
+     *
+     * Contoh penggunaan:
+     * handleBiometricAuth() dipicu saat tombol "Quick Login" ditekan.
+     */
     const handleBiometricAuth = async () => {
         try {
             const { success } = await rnBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint to login' });

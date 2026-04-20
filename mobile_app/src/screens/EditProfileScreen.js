@@ -4,6 +4,17 @@ import { Text, Button, TextInput, IconButton, Portal, Modal } from 'react-native
 import { Calendar } from 'react-native-calendars';
 import api from '../services/api';
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Edit Profil yang memungkinkan member untuk memperbarui data pribadi mereka.
+ * Field yang dapat diubah meliputi nama, telepon, email, tempat lahir, tanggal lahir, dan alamat.
+ *
+ * Parameter:
+ * @param {Object} navigation Objek navigasi dari React Navigation.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Edit Profil.
+ */
 export default function EditProfileScreen({ navigation }) {
     const [editForm, setEditForm] = useState({ id_card_number: '', name: '', phone: '', email: '', birth_place: '', birth_date: '', address: '' });
     const [isSaving, setIsSaving] = useState(false);
@@ -31,6 +42,11 @@ export default function EditProfileScreen({ navigation }) {
         }
     };
 
+    /**
+     * Deskripsi singkat:
+     * Mengirimkan perubahan data profil user ke server backend melalui permintaan PUT.
+     * Menampilkan pesan sukses dan kembali ke layar sebelumnya jika berhasil.
+     */
     const handleSaveProfile = async () => {
         setIsSaving(true);
         try {

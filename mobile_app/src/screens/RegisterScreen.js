@@ -4,6 +4,17 @@ import { Text, TextInput, Button, Dialog, Portal, Card, List, IconButton, Modal 
 import { Calendar } from 'react-native-calendars';
 import api from '../services/api';
 
+/**
+ * Deskripsi singkat:
+ * Komponen layar Registrasi yang menangani pendaftaran member baru.
+ * Mencakup pemilihan paket promosi, input data pribadi, dan pemilihan cabang home base.
+ *
+ * Parameter:
+ * @param {Object} navigation Objek navigasi dari React Navigation.
+ *
+ * Return value:
+ * @return {React.Component} Render elemen UI untuk layar Registrasi.
+ */
 export default function RegisterScreen({ navigation }) {
     const [form, setForm] = useState({
         name: '',
@@ -48,6 +59,14 @@ export default function RegisterScreen({ navigation }) {
         fetchInitialData();
     }, []);
 
+    /**
+     * Deskripsi singkat:
+     * Menangani proses pendaftaran member baru dengan mengirimkan data form ke API /register.
+     * Setelah sukses, token akan disimpan dan user diarahkan ke dashboard utama.
+     *
+     * Contoh penggunaan:
+     * handleRegister() dipicu saat tombol "REGISTER & PAY" ditekan.
+     */
     const handleRegister = async () => {
         if (!form.name || !form.email || !form.password || !form.id_card_number || !form.branch_id || !form.birth_place || !form.birth_date || !form.address) {
             setErrorMessage("Please fill all required fields before registering.");
