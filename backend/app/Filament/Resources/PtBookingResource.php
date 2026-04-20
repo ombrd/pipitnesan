@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class PtBookingResource
+ * 
+ * Mengelola riwayat dan status booking PT (misal: "booked", "done", "cancelled").
+ *
+ * @package App\Filament\Resources
+ */
 class PtBookingResource extends Resource
 {
     protected static ?string $model = PtBooking::class;

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "sail" ]; then
     echo "You should set SUPERVISOR_PHP_USER to either 'sail' or 'root'."
@@ -6,7 +6,10 @@ if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "sail" ];
 fi
 
 if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER sail
+    # In Alpine we can modify the user UID simply by editing the passwd file directly
+    sed -i "s/sail:x:1337/sail:x:$WWWUSER/g" /etc/passwd
+    # Or change directory ownership
+    chown -R $WWWUSER:sail /var/www/html || true
 fi
 
 if [ ! -d /.composer ]; then
@@ -19,11 +22,11 @@ if [ $# -gt 0 ]; then
     if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
         exec "$@"
     else
-        exec gosu $WWWUSER "$@"
+        exec su-exec $WWWUSER "$@"
     fi
 else
     echo "Running automatic database migrations..."
-    gosu $WWWUSER php artisan migrate --seed --force
+    su-exec $WWWUSER php artisan migrate --seed --force
     
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi

@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class PtScheduleResource
+ * 
+ * Mengatur slot jadwal dari Personal Trainer (tanggal, jam mulai, jam selesai, dan kuota peserta).
+ *
+ * @package App\Filament\Resources
+ */
 class PtScheduleResource extends Resource
 {
     protected static ?string $model = PtSchedule::class;

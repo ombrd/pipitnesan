@@ -15,6 +15,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class MemberResource
+ * 
+ * Mengelola pembuatan, pengeditan, dan list direktori Member (pelanggan gym).
+ * Termasuk interaktivitas select berjenjang (seperti memilih Cabang lalu menampilkan Promo dan AO khusus cabang tersebut).
+ *
+ * @package App\Filament\Resources
+ */
 class MemberResource extends Resource
 {
     protected static ?string $model = Member::class;

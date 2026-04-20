@@ -15,6 +15,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class AuditResource
+ * 
+ * Mengelola antarmuka log audit (Audit Trail) dari paket owen-it/laravel-auditing di Filament.
+ * Berfungsi untuk melacak setiap perubahan data krusial di database yang dilakukan oleh staf/sistem.
+ *
+ * @package App\Filament\Resources
+ */
 class AuditResource extends Resource
 {
     protected static ?string $model = Audit::class;
@@ -31,6 +39,13 @@ class AuditResource extends Resource
         return false;
     }
 
+    /**
+     * Mendefinisikan form read-only untuk membandingkan Value yang Lama (Old) dan Baru (New)
+     * saat data diedit oleh user.
+     *
+     * @param \Filament\Forms\Form $form
+     * @return \Filament\Forms\Form
+     */
     public static function form(Form $form): Form
     {
         return $form

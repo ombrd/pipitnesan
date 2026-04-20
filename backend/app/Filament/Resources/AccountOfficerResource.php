@@ -13,6 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class AccountOfficerResource
+ * 
+ * Mengelola antarmuka CRUD (Create, Read, Update, Delete) untuk entitas Account Officer di dalam Filament Admin Panel.
+ * Resource ini tergabung dalam navigasi 'Master Data'.
+ *
+ * @package App\Filament\Resources
+ */
 class AccountOfficerResource extends Resource
 {
     protected static ?string $model = AccountOfficer::class;
@@ -20,6 +28,13 @@ class AccountOfficerResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Master Data';
 
+    /**
+     * Mendefinisikan skema form yang digunakan untuk menambah atau mengedit data Account Officer.
+     * Field 'code' di-*disable* (hanya dibaca) karena digenerate otomatis di model.
+     *
+     * @param \Filament\Forms\Form $form
+     * @return \Filament\Forms\Form
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -43,6 +58,13 @@ class AccountOfficerResource extends Resource
             ]);
     }
 
+    /**
+     * Mendefinisikan konfigurasi tabel yang ditampilkan pada halaman list Account Officer.
+     * Termasuk kolom yang bisa di-*search* dan di-*sort*.
+     *
+     * @param \Filament\Tables\Table $table
+     * @return \Filament\Tables\Table
+     */
     public static function table(Table $table): Table
     {
         return $table

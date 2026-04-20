@@ -14,6 +14,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class UserResource
+ * 
+ * Mengelola akses akun Administrator atau Staf (User) yang memiliki akses ke dashboard Filament.
+ * Berbeda dengan tabel Member, User di sini difokuskan untuk pengelolaan bisnis, termasuk pemberian akses Role.
+ *
+ * @package App\Filament\Resources
+ */
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;

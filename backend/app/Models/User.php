@@ -10,6 +10,14 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * Class User
+ * 
+ * Merepresentasikan akun staf atau admin untuk web dashboard (berbeda dari entitas Member).
+ * Mendukung pembatasan role via Spatie Permission dan terintegrasi dengan Filament Admin Panel.
+ *
+ * @package App\Models
+ */
 class User extends Authenticatable implements FilamentUser, \OwenIt\Auditing\Contracts\Auditable
 {
     use \OwenIt\Auditing\Auditable;
@@ -18,15 +26,22 @@ class User extends Authenticatable implements FilamentUser, \OwenIt\Auditing\Con
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    /**
+     * Memastikan keabsahan akses bagi user untuk masuk log in ke panel Filament.
+     * Dalam use case ini, dikembalikan true secara asertif yang artinya semua staf yang terdaftar boleh masuk.
+     *
+     * @param \Filament\Panel $panel
+     * @return bool
+     */
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }
 
     /**
-     * The attributes that are mass assignable.
+     * Atribut yang dapat diisi secara massal.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -35,15 +50,20 @@ class User extends Authenticatable implements FilamentUser, \OwenIt\Auditing\Con
         'branch_id',
     ];
 
+    /**
+     * Relasi: Area cabang tempat staf ini ditugaskan.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function branch()
     {
         return $this->belongsTo(Branch::class);
     }
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atribut yang disembunyikan saat serialisasi object ke array/JSON.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -51,7 +71,7 @@ class User extends Authenticatable implements FilamentUser, \OwenIt\Auditing\Con
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Peruntukan tipe data dinamis dan validasi hash otomatis.
      *
      * @return array<string, string>
      */

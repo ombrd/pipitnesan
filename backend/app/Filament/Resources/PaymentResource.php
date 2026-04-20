@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class PaymentResource
+ * 
+ * Mengelola entitas pembayaran oleh Member melalui panel admin (Kasir).
+ *
+ * @package App\Filament\Resources
+ */
 class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;

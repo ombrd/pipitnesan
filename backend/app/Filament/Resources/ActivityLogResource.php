@@ -13,12 +13,27 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class ActivityLogResource
+ * 
+ * Mengelola riwayat catatan aktivitas di dalam Filament Admin Panel.
+ * Digunakan oleh fitur audit atau tracking behavior member (seperti check-in absensi).
+ *
+ * @package App\Filament\Resources
+ */
 class ActivityLogResource extends Resource
 {
     protected static ?string $model = ActivityLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    /**
+     * Mendefinisikan skema form yang digunakan untuk menampilkan data Activity Log.
+     * Biasanya log bersifat *read-only* atau di-*insert* oleh sistem, tapi form ini tetap disiapkan sesuai skema database.
+     *
+     * @param \Filament\Forms\Form $form
+     * @return \Filament\Forms\Form
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -32,6 +47,12 @@ class ActivityLogResource extends Resource
             ]);
     }
 
+    /**
+     * Mendefinisikan konfigurasi tabel yang ditampilkan pada halaman log aktivitas.
+     *
+     * @param \Filament\Tables\Table $table
+     * @return \Filament\Tables\Table
+     */
     public static function table(Table $table): Table
     {
         return $table

@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class PersonalTrainerResource
+ * 
+ * Mengelola entitas Personal Trainer di panel admin, termasuk pengaturan status aktif/non-aktif.
+ *
+ * @package App\Filament\Resources
+ */
 class PersonalTrainerResource extends Resource
 {
     protected static ?string $model = PersonalTrainer::class;

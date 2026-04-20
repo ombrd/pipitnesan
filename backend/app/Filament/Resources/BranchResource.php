@@ -13,6 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class BranchResource
+ * 
+ * Mengelola antarmuka CRUD untuk entitas Cabang (Branch) di dalam Filament Admin Panel.
+ * Digunakan oleh Super Admin untuk menambah/edit cabang gym Pipitnesan.
+ *
+ * @package App\Filament\Resources
+ */
 class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
@@ -20,6 +28,13 @@ class BranchResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Master Data';
 
+    /**
+     * Mendefinisikan skema form yang digunakan untuk menambah atau mengedit detail cabang.
+     * Field 'code' digenerate otomatis, sehingga statusnya disabled.
+     *
+     * @param \Filament\Forms\Form $form
+     * @return \Filament\Forms\Form
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -38,6 +53,12 @@ class BranchResource extends Resource
             ]);
     }
 
+    /**
+     * Mendefinisikan konfigurasi tabel yang ditampilkan pada halaman daftar cabang.
+     *
+     * @param \Filament\Tables\Table $table
+     * @return \Filament\Tables\Table
+     */
     public static function table(Table $table): Table
     {
         return $table

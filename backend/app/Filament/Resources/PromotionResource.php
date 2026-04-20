@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/**
+ * Class PromotionResource
+ * 
+ * Mengelola katalog Promosi (Paket Membership) untuk setiap cabang, mencakup penentuan harga dasar dan masa aktif (durasi).
+ *
+ * @package App\Filament\Resources
+ */
 class PromotionResource extends Resource
 {
     protected static ?string $model = Promotion::class;
