@@ -9,8 +9,9 @@ if "%~1"=="down" goto down
 if "%~1"=="restart" goto restart
 if "%~1"=="shell" goto shell
 if "%~1"=="share" goto share
+if "%~1"=="fix" goto fix
 
-echo Usage: make.bat [setup^|up^|down^|restart^|shell^|share]
+echo Usage: make.bat [setup^|up^|down^|restart^|shell^|share^|fix]
 goto :eof
 
 :setup
@@ -59,4 +60,12 @@ goto :eof
 :share
 echo Sharing application via Ngrok tunnel requires manual execution of Sail on Windows.
 echo Try running: wsl ./vendor/bin/sail share
+goto :eof
+
+:fix
+echo Fixing directory permissions...
+docker compose exec -u root laravel.test chmod -R 777 storage bootstrap/cache
+echo Clearing all application and optimization caches...
+docker compose exec -u sail laravel.test php artisan optimize:clear
+echo Fix complete! Your environment should now be refreshed.
 goto :eof
