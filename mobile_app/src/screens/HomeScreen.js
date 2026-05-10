@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Text, Card, Button, Avatar, List, Modal, Portal, Dialog, IconButton } from 'react-native-paper';
 import { Calendar } from 'react-native-calendars';
 import { format } from 'date-fns';
@@ -143,6 +143,26 @@ export default function HomeScreen({ navigation }) {
                 <Text variant="headlineSmall" style={styles.title}>Welcome to Pipitnesan</Text>
             </View>
 
+            <Text variant="titleMedium" style={styles.sectionTitle}>Gym Training</Text>
+            <View style={styles.featuresRow}>
+                <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('GymGoals')}>
+                    <Avatar.Icon size={50} icon="target" backgroundColor="#f5f3ff" color="#9348cc" />
+                    <Text variant="bodySmall" style={styles.featureText}>Set Goals</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('TrainingPlans')}>
+                    <Avatar.Icon size={50} icon="clipboard-list-outline" backgroundColor="#f0f9ff" color="#0ea5e9" />
+                    <Text variant="bodySmall" style={styles.featureText}>Plans</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('Exercises')}>
+                    <Avatar.Icon size={50} icon="dumbbell" backgroundColor="#fefce8" color="#eab308" />
+                    <Text variant="bodySmall" style={styles.featureText}>Exercises</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('TrainingHistory')}>
+                    <Avatar.Icon size={50} icon="history" backgroundColor="#f0fdf4" color="#22c55e" />
+                    <Text variant="bodySmall" style={styles.featureText}>History</Text>
+                </TouchableOpacity>
+            </View>
+
             <Text variant="titleMedium" style={styles.sectionTitle}>Select Branch</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.ptList}>
                 {branches.map(branch => (
@@ -254,6 +274,9 @@ const styles = StyleSheet.create({
     ptCard: { marginRight: 12, width: 120, backgroundColor: '#fff' },
     ptCardSelected: { borderColor: '#9348cc', borderWidth: 2 },
     ptCardContent: { alignItems: 'center' },
+    featuresRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24, backgroundColor: '#fff', padding: 16, borderRadius: 16, elevation: 2 },
+    featureItem: { alignItems: 'center', width: '22%' },
+    featureText: { marginTop: 8, fontWeight: '600', color: '#475569', textAlign: 'center' },
     calendarHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
     modalContent: { backgroundColor: 'white', padding: 20, margin: 20, borderRadius: 12 }
 });

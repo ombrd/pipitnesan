@@ -4,6 +4,7 @@ import { Text, SegmentedButtons, Card, List, Button, Dialog, Portal, TextInput, 
 import { TabView, SceneMap } from 'react-native-tab-view';
 import api from '../services/api';
 import { format } from 'date-fns';
+import TrainingHistoryScreen from './TrainingHistoryScreen';
 
 const EmptyState = ({ message }) => (
     <View style={styles.scene}>
@@ -184,6 +185,7 @@ const VisitsTab = () => {
 const renderScene = SceneMap({
     first: BookingsTab,
     second: VisitsTab,
+    third: TrainingHistoryScreen,
 });
 
 /**
@@ -200,6 +202,7 @@ export default function ActivityScreen() {
     const [routes] = useState([
         { key: 'first', title: 'PT Bookings' },
         { key: 'second', title: 'Visit History' },
+        { key: 'third', title: 'Training' },
     ]);
 
     return (
@@ -211,7 +214,8 @@ export default function ActivityScreen() {
                     onValueChange={val => setIndex(routes.findIndex(r => r.key === val))}
                     buttons={[
                         { value: 'first', label: 'Bookings' },
-                        { value: 'second', label: 'Visits' }
+                        { value: 'second', label: 'Visits' },
+                        { value: 'third', label: 'Training' }
                     ]}
                 />
             </View>

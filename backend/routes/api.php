@@ -44,4 +44,22 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('pts/book/{id}/cancel', [App\Http\Controllers\Api\BookingController::class, 'cancel']);
     Route::get('visits', [VisitController::class, 'index']);
 
+    // Gym Features
+    Route::get('gym/goals', [\App\Http\Controllers\Api\GymController::class, 'getGoals']);
+    Route::get('gym/training-plans', [\App\Http\Controllers\Api\GymController::class, 'getTrainingPlans']);
+    Route::get('gym/exercises', [\App\Http\Controllers\Api\GymController::class, 'getExercises']);
+    Route::post('gym/recommendations', [\App\Http\Controllers\Api\GymController::class, 'getRecommendations']);
+    Route::post('gym/select-plan', [\App\Http\Controllers\Api\GymController::class, 'selectPlan']);
+    
+    // Activity History
+    Route::get('gym/history', [\App\Http\Controllers\Api\ActivityController::class, 'getHistory']);
+    Route::post('gym/log-activity', [\App\Http\Controllers\Api\ActivityController::class, 'logActivity']);
+
+});
+
+// Admin Routes (For Management)
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function () {
+    Route::apiResource('goals', \App\Http\Controllers\Admin\GoalController::class);
+    Route::apiResource('training-plans', \App\Http\Controllers\Admin\TrainingPlanController::class);
+    Route::apiResource('exercises', \App\Http\Controllers\Admin\ExerciseController::class);
 });
