@@ -70,7 +70,7 @@ const BookingsTab = () => {
         }
     };
 
-    if (loading) return <View style={styles.scene}><ActivityIndicator color="#9348cc" /></View>;
+    if (loading) return <View style={styles.scene}><ActivityIndicator color="#dc2626" /></View>;
     if (bookings.length === 0) return <EmptyState message="You have no PT bookings." />;
 
     const isFuture = (dateStr) => {
@@ -161,7 +161,7 @@ const VisitsTab = () => {
         fetchVisits();
     }, []);
 
-    if (loading) return <View style={styles.scene}><ActivityIndicator color="#9348cc" /></View>;
+    if (loading) return <View style={styles.scene}><ActivityIndicator color="#dc2626" /></View>;
     if (visits.length === 0) return <EmptyState message="You haven't visited the gym yet." />;
 
     return (
@@ -174,7 +174,7 @@ const VisitsTab = () => {
                     <List.Item
                         title="Gym Entry Checked"
                         description={format(new Date(item.created_at), 'dd MMM yyyy, HH:mm')}
-                        left={props => <List.Icon {...props} icon="door-open" color="#9348cc" />}
+                        left={props => <List.Icon {...props} icon="door-open" color="#dc2626" />}
                     />
                 </Card>
             )}

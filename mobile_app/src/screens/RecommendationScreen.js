@@ -37,7 +37,7 @@ export default function RecommendationScreen({ route, navigation }) {
         }
     };
 
-    if (loading) return <View style={styles.center}><ActivityIndicator color="#9348cc" size="large" /></View>;
+    if (loading) return <View style={styles.center}><ActivityIndicator color="#dc2626" size="large" /></View>;
 
     return (
         <View style={styles.container}>
@@ -62,7 +62,7 @@ export default function RecommendationScreen({ route, navigation }) {
                             <Text variant="bodyMedium" style={styles.description}>{item.description}</Text>
                             <View style={styles.goalsContainer}>
                                 {item.goals.map(goal => (
-                                    <Chip key={goal.id} style={styles.goalChip} textStyle={{ fontSize: 10, color: '#9348cc' }}>{goal.name}</Chip>
+                                    <Chip key={goal.id} style={styles.goalChip} textStyle={{ fontSize: 10, color: '#dc2626' }}>{goal.name}</Chip>
                                 ))}
                             </View>
                         </Card.Content>
@@ -72,7 +72,7 @@ export default function RecommendationScreen({ route, navigation }) {
                                 onPress={() => handleSelectPlan(item.id)}
                                 loading={selecting === item.id}
                                 disabled={selecting !== null}
-                                buttonColor="#9348cc"
+                                buttonColor="#dc2626"
                                 style={styles.selectButton}
                             >
                                 Select This Plan
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     exerciseCount: { color: '#64748b', fontSize: 12, fontWeight: '500' },
     description: { color: '#334155', lineHeight: 20 },
     goalsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 12 },
-    goalChip: { marginRight: 6, marginBottom: 6, height: 26, backgroundColor: '#f5f3ff', borderRadius: 8 },
+    goalChip: { marginRight: 6, marginBottom: 6, height: 26, backgroundColor: '#fee2e2', borderRadius: 8 },
     actions: { paddingHorizontal: 16, paddingBottom: 16 },
     selectButton: { flex: 1, borderRadius: 10 },
     empty: { textAlign: 'center', marginTop: 60, color: '#64748b', fontSize: 16 }

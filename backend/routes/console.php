@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('app:send-fcm')->dailyAt('08:00');
+Schedule::command('app:auto-checkout')->everyMinute();

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PtBooking;
 use App\Models\PtSchedule;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -43,6 +45,8 @@ class BookingController extends Controller
      * Membuat booking baru untuk jadwal PT tertentu atas nama member yang sedang login.
      * Metode ini melakukan serangkaian validasi: status membership harus aktif, jadwal tidak boleh di masa lalu,
      * memastikan jadwal belum penuh (kuota), dan mencegah duplikasi booking di jadwal yang sama.
+     * Seluruh proses berjalan di dalam database transaction dengan row-level lock untuk mencegah double booking
+     * dari request yang datang bersamaan (concurrency, lihat F-API-09).
      *
      * Parameter:
      * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'pt_schedule_id' (integer).
@@ -71,38 +75,43 @@ class BookingController extends Controller
             return response()->json(['error' => 'Your membership is not active. Please renew first.'], 403);
         }
 
-        $schedule = PtSchedule::findOrFail($request->pt_schedule_id);
+        // Seluruh validasi kuota dan pembuatan booking dijalankan di dalam database transaction
+        // dengan row-level lock pada baris jadwal, sehingga request yang datang bersamaan
+        // (double booking) tidak dapat lolos validasi (F-API-09).
+        $booking = DB::transaction(function () use ($request, $user) {
+            $schedule = PtSchedule::lockForUpdate()->findOrFail($request->pt_schedule_id);
 
-        // Check if schedule is in the past
-        if (now()->toDateString() > $schedule->date) {
-             return response()->json(['error' => 'Cannot book a schedule in the past.'], 422);
-        }
+            // Check if schedule is in the past
+            if (now()->toDateString() > $schedule->date) {
+                throw new HttpResponseException(response()->json(['error' => 'Cannot book a schedule in the past.'], 422));
+            }
 
-        // Check quota (count active/done bookings)
-        $currentBookingsCount = PtBooking::where('pt_schedule_id', $schedule->id)
-            ->whereIn('status', ['booked', 'done'])
-            ->count();
+            // Check quota (count active/done bookings)
+            $currentBookingsCount = PtBooking::where('pt_schedule_id', $schedule->id)
+                ->whereIn('status', ['booked', 'done'])
+                ->count();
 
-        if ($currentBookingsCount >= $schedule->quota) {
-            return response()->json(['error' => 'This schedule is already fully booked.'], 409);
-        }
+            if ($currentBookingsCount >= $schedule->quota) {
+                throw new HttpResponseException(response()->json(['error' => 'This schedule is already fully booked.'], 409));
+            }
 
-        // Check if member already booked this schedule
-        $existingBooking = PtBooking::where('pt_schedule_id', $schedule->id)
-            ->where('member_id', $user->id)
-            ->whereIn('status', ['booked', 'done'])
-            ->first();
+            // Check if member already booked this schedule
+            $existingBooking = PtBooking::where('pt_schedule_id', $schedule->id)
+                ->where('member_id', $user->id)
+                ->whereIn('status', ['booked', 'done'])
+                ->first();
 
-        if ($existingBooking) {
-            return response()->json(['error' => 'You have already booked this schedule.'], 409);
-        }
+            if ($existingBooking) {
+                throw new HttpResponseException(response()->json(['error' => 'You have already booked this schedule.'], 409));
+            }
 
-        // Create the booking
-        $booking = PtBooking::create([
-            'member_id' => $user->id,
-            'pt_schedule_id' => $schedule->id,
-            'status' => 'booked',
-        ]);
+            // Create the booking
+            return PtBooking::create([
+                'member_id' => $user->id,
+                'pt_schedule_id' => $schedule->id,
+                'status' => 'booked',
+            ]);
+        });
 
         return response()->json([
             'message' => 'Successfully booked the schedule',

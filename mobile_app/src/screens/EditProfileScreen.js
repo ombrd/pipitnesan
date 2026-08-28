@@ -144,7 +144,7 @@ export default function EditProfileScreen({ navigation }) {
                     mode="contained"
                     onPress={handleSaveProfile}
                     loading={isSaving}
-                    buttonColor="#9348cc"
+                    buttonColor="#dc2626"
                     style={styles.saveBtn}
                 >
                     Save Changes
@@ -163,7 +163,7 @@ export default function EditProfileScreen({ navigation }) {
                             setCalendarVisible(false);
                         }}
                         markedDates={{
-                            [editForm.birth_date]: { selected: true, disableTouchEvent: true, selectedColor: '#9348cc' }
+                            [editForm.birth_date]: { selected: true, disableTouchEvent: true, selectedColor: '#dc2626' }
                         }}
                     />
                 </Modal>

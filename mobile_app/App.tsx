@@ -14,6 +14,7 @@ import TrainingPlansScreen from './src/screens/TrainingPlansScreen';
 import ExercisesScreen from './src/screens/ExercisesScreen';
 import RecommendationScreen from './src/screens/RecommendationScreen';
 import TrainingHistoryScreen from './src/screens/TrainingHistoryScreen';
+import { navigationRef } from './src/navigation/navigationRef';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,15 +22,15 @@ const theme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#0ca5e9', // Sky 500
-    secondary: '#334155', // Slate 700
+    primary: '#dc2626', // Red 600 - energi (identitas brand: hitam/merah/putih)
+    secondary: '#334155', // Slate 700 - identitas gelap
   },
 };
 
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />

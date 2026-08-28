@@ -23,7 +23,7 @@ export default function TrainingHistoryScreen() {
         }
     };
 
-    if (loading) return <View style={styles.center}><ActivityIndicator color="#9348cc" size="large" /></View>;
+    if (loading) return <View style={styles.center}><ActivityIndicator color="#dc2626" size="large" /></View>;
 
     return (
         <View style={styles.container}>
@@ -43,7 +43,7 @@ export default function TrainingHistoryScreen() {
                                     {...props} 
                                     icon={item.exercise ? "run" : "clipboard-list"} 
                                     backgroundColor="#f8fafc" 
-                                    color="#9348cc" 
+                                    color="#dc2626" 
                                     size={44} 
                                 />
                             )}

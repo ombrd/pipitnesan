@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    // Firebase Cloud Messaging (FCM) untuk push notification mobile app.
+    // Jika kredensial Service Account tidak diisi, pengiriman notifikasi hanya dicatat ke log.
+    'fcm' => [
+        'project_id' => env('FCM_PROJECT_ID'),
+        'client_email' => env('FCM_CLIENT_EMAIL'),
+        'private_key' => env('FCM_PRIVATE_KEY'),
+    ],
+
 ];

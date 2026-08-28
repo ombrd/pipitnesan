@@ -1,4 +1,12 @@
-.PHONY: install start android ios build-android-debug build-android-release build-android-bundle clean clean-android clean-ios
+.PHONY: install start stop-metro android ios build-android-debug build-android-release build-android-bundle clean clean-android clean-ios
+
+# Ensure the React Native CLI can locate adb (it checks ANDROID_HOME, then PATH).
+# Guarded so it only applies when the default macOS SDK location exists.
+ANDROID_HOME ?= $(HOME)/Library/Android/sdk
+ifneq ($(wildcard $(ANDROID_HOME)/platform-tools/adb),)
+export ANDROID_HOME
+export PATH := $(ANDROID_HOME)/platform-tools:$(PATH)
+endif
 
 # Install dependencies for both JS and iOS
 install:
@@ -9,8 +17,21 @@ install:
 start:
 	npm start
 
+# Stop the background Metro dev server
+stop-metro:
+	@lsof -tiTCP:8081 -sTCP:LISTEN | xargs kill 2>/dev/null || true
+	@echo "Metro dev server stopped."
+
 # Run the app on Android
+# Note: built ABIs are controlled by reactNativeArchitectures in android/gradle.properties.
+# The RN CLI no longer auto-starts Metro, so start it in the background when it is
+# not already running (logs: metro.log; stop with: make stop-metro; foreground: make start).
 android:
+	@if ! lsof -iTCP:8081 -sTCP:LISTEN >/dev/null 2>&1; then \
+		echo "Metro dev server not running - starting it in the background (logs: metro.log)"; \
+		nohup npx react-native start > metro.log 2>&1 & \
+		sleep 5; \
+	fi
 	npm run android
 
 # Run the app on iOS

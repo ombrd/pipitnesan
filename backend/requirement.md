@@ -77,15 +77,15 @@ PostgreSQL Database
 - Filament Admin Panel
 
 **Backend/API:**
-- Laravel 11/12
-- Laravel Sanctum (Token Authentication)
+- Laravel 11
+- php-open-source-saver/jwt-auth (JWT Token Authentication)
 - RESTful API
 
 **Mobile:**
 - React Native (Android & iOS)
 
 **Database:**
-- PostgreSQL 15
+- PostgreSQL 17
 
 **Deployment:**
 - Docker (Nginx + PHP-FPM + PostgreSQL)
@@ -121,9 +121,9 @@ PostgreSQL Database
 
 | ID | Requirement | Description |
 |----|-------------|------------|
-| F-API-01 | Authentication | Token-based authentication menggunakan Laravel Sanctum. |
+| F-API-01 | Authentication | Token-based authentication menggunakan JWT (php-open-source-saver/jwt-auth). |
 | F-API-02 | Member Login | Login menggunakan nomor member aktif. |
-| F-API-03 | QR Generation | Generate QR token dinamis berlaku 3–5 menit. |
+| F-API-03 | QR Generation | Generate QR token dinamis berlaku 1 menit. |
 | F-API-04 | QR Validation | Validasi QR saat scan dan pencatatan kehadiran. |
 | F-API-05 | PT List Endpoint | Endpoint daftar PT aktif. |
 | F-API-06 | PT Schedule Endpoint | Endpoint jadwal PT per tanggal. |

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Member;
+use App\Models\RefreshToken;
 
 class AuthController extends Controller
 {
@@ -13,12 +14,14 @@ class AuthController extends Controller
     /**
      * Deskripsi singkat:
      * Melakukan proses otentikasi (login) untuk member menggunakan JWT.
-     * 
+     * Mengembalikan dua token: Access Token (JWT, pendek, 15 menit) dan
+     * Refresh Token (opaque, panjang, 14 hari) yang disimpan ke database.
+     *
      * Parameter:
      * @param  \Illuminate\Http\Request  $request  Objek request klien. Membutuhkan 'member_number' dan 'password'.
      *
      * Return value:
-     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token JWT jika sukses, atau error 401 jika gagal.
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi access_token, refresh_token, dan data user.
      *
      * Contoh penggunaan:
      * POST /api/auth/login
@@ -33,16 +36,22 @@ class AuthController extends Controller
 
         $credentials = $request->only('member_number', 'password');
 
-        if (! $token = auth('api')->attempt($credentials)) {
+        if (! $accessToken = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized or invalid credentials'], 401);
         }
 
-        return $this->respondWithToken($token);
+        $user = auth('api')->user();
+
+        // Buat Refresh Token opaque baru dan simpan ke database
+        $refreshTtlMinutes = (int) config('jwt.refresh_ttl', 20160);
+        ['token' => $refreshToken] = RefreshToken::createForMember($user->id, $refreshTtlMinutes);
+
+        return $this->respondWithToken($accessToken, $refreshToken);
     }
 
     /**
      * Deskripsi singkat:
-     * Mendaftarkan member baru ke dalam sistem dan menandainya sebagai member aktif 
+     * Mendaftarkan member baru ke dalam sistem dan menandainya sebagai member aktif
      * berdasarkan durasi promosi yang dipilih.
      *
      * Parameter:
@@ -72,7 +81,7 @@ class AuthController extends Controller
         ]);
 
         $promotion = \App\Models\Promotion::findOrFail($request->promotion_id);
-        
+
         // Pick random AO for this branch
         $randomAo = \App\Models\AccountOfficer::where('branch_id', $request->branch_id)->inRandomOrder()->first();
 
@@ -88,7 +97,7 @@ class AuthController extends Controller
             'birth_date' => $request->birth_date,
             'account_officer_code' => $randomAo ? $randomAo->code : null,
             'fcm_token' => $request->fcm_token,
-            'status' => 'active', 
+            'status' => 'active',
             'active_until' => now()->addDays($promotion->duration_days)
         ]);
 
@@ -100,8 +109,12 @@ class AuthController extends Controller
 
         event(new \Illuminate\Auth\Events\Registered($member));
 
-        $token = auth('api')->login($member);
-        return $this->respondWithToken($token);
+        $accessToken = auth('api')->login($member);
+
+        $refreshTtlMinutes = (int) config('jwt.refresh_ttl', 20160);
+        ['token' => $refreshToken] = RefreshToken::createForMember($member->id, $refreshTtlMinutes);
+
+        return $this->respondWithToken($accessToken, $refreshToken);
     }
 
     /**
@@ -174,11 +187,11 @@ class AuthController extends Controller
 
     /**
      * Deskripsi singkat:
-     * Melakukan proses logout untuk member yang sedang aktif, yaitu membuat token JWT saat ini 
-     * menjadi tidak valid (invalidated).
+     * Melakukan proses logout untuk member yang sedang aktif.
+     * Me-revoke Refresh Token yang dikirim dalam body request dan me-invalidate JWT saat ini.
      *
      * Parameter:
-     * (Tidak ada parameter spesifik, menggunakan token JWT dari header Auth)
+     * @param  \Illuminate\Http\Request  $request  Membutuhkan field 'refresh_token' di body.
      *
      * Return value:
      * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON yang mengkonfirmasi proses logout berhasil.
@@ -186,9 +199,18 @@ class AuthController extends Controller
      * Contoh penggunaan:
      * POST /api/auth/logout
      * Headers: Authorization: Bearer <token>
+     * Body JSON: { "refresh_token": "<refresh_token_plaintext>" }
      */
-    public function logout()
+    public function logout(Request $request)
     {
+        // Revoke Refresh Token dari database agar tidak bisa dipakai lagi
+        if ($request->filled('refresh_token')) {
+            $hashed = hash('sha256', $request->input('refresh_token'));
+            RefreshToken::where('token', $hashed)
+                ->whereNull('revoked_at')
+                ->update(['revoked_at' => now()]);
+        }
+
         auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
@@ -196,26 +218,52 @@ class AuthController extends Controller
 
     /**
      * Deskripsi singkat:
-     * Memperbarui (refresh) token JWT yang sudah ada dan akan kedaluwarsa, menjadi token baru dengan masa aktif yang baru.
+     * Memperbarui Access Token menggunakan Refresh Token yang valid.
+     * Endpoint ini TIDAK membutuhkan Access Token yang masih valid di header Authorization.
+     * Menggunakan strategi "Refresh Token Rotation": setiap pemanggilan menghasilkan
+     * Refresh Token baru dan me-revoke yang lama.
      *
      * Parameter:
-     * (Tidak ada parameter spesifik, menggunakan token JWT lama dari header Auth)
+     * @param  \Illuminate\Http\Request  $request  Membutuhkan field 'refresh_token' di body.
      *
      * Return value:
-     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi token JWT yang baru di-refresh.
+     * @return \Illuminate\Http\JsonResponse Mengembalikan response JSON berisi access_token dan refresh_token baru.
      *
      * Contoh penggunaan:
      * POST /api/auth/refresh
-     * Headers: Authorization: Bearer <token>
+     * Body JSON: { "refresh_token": "<refresh_token_plaintext>" }
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        $request->validate([
+            'refresh_token' => 'required|string',
+        ]);
+
+        // Cari dan validasi Refresh Token dari database
+        $refreshTokenModel = RefreshToken::findValid($request->input('refresh_token'));
+
+        if (! $refreshTokenModel) {
+            return response()->json(['error' => 'Invalid or expired refresh token'], 401);
+        }
+
+        $member = $refreshTokenModel->member;
+
+        // Revoke Refresh Token lama (Refresh Token Rotation untuk keamanan)
+        $refreshTokenModel->update(['revoked_at' => now()]);
+
+        // Issue Access Token JWT baru untuk member ini
+        $newAccessToken = auth('api')->login($member);
+
+        // Buat Refresh Token baru
+        $refreshTtlMinutes = (int) config('jwt.refresh_ttl', 20160);
+        ['token' => $newRefreshToken] = RefreshToken::createForMember($member->id, $refreshTtlMinutes);
+
+        return $this->respondWithToken($newAccessToken, $newRefreshToken);
     }
 
     /**
      * Deskripsi singkat:
-     * Menghasilkan *QR Code* absensi dinamis (yang berisi custom JWT Payload) untuk member yang sedang login. 
+     * Menghasilkan *QR Code* absensi dinamis (yang berisi custom JWT Payload) untuk member yang sedang login.
      * Validasi status member harus aktif terlebih dahulu. QR Code ini hanya valid selama 1 menit.
      *
      * Parameter:
@@ -231,16 +279,18 @@ class AuthController extends Controller
     public function generateQR()
     {
         $user = auth('api')->user();
-        
+
         if ($user->status !== 'active') {
             return response()->json(['error' => 'Membership is not active'], 403);
         }
 
         // Create a custom 1-minute expiration payload for QR
+        // Adding 'jti' ensures uniqueness per request even within the same second
         $payload = auth('api')->factory()->customClaims([
             'sub' => $user->id,
             'member_number' => $user->member_number,
-            'purpose' => 'attendance'
+            'purpose' => 'attendance',
+            'jti' => (string) \Illuminate\Support\Str::uuid()
         ])->setTTL(1)->make();
 
         $token = auth('api')->manager()->encode($payload)->get();
@@ -253,19 +303,24 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the token array structure.
+     * Deskripsi singkat:
+     * Membangun struktur response JSON yang berisi Access Token, Refresh Token, dan data user.
      *
-     * @param  string $token
+     * Parameter:
+     * @param  string $accessToken   JWT Access Token yang baru dibuat.
+     * @param  string $refreshToken  Refresh Token plaintext yang baru dibuat.
      *
+     * Return value:
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken(string $accessToken, string $refreshToken)
     {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60,
-            'user' => auth('api')->user()
+            'access_token'  => $accessToken,
+            'refresh_token' => $refreshToken,
+            'token_type'    => 'bearer',
+            'expires_in'    => config('jwt.ttl') * 60, // dalam detik
+            'user'          => auth('api')->user()
         ]);
     }
 }

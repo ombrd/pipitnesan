@@ -104,18 +104,18 @@ const styles = StyleSheet.create({
         borderBottomColor: 'rgba(0,0,0,0.05)'
     },
     headerTitle: {
-        color: '#9348cc',
+        color: '#dc2626',
         fontWeight: 'bold',
         fontSize: 22
     },
     statusBadge: {
-        backgroundColor: '#e9d5ff',
+        backgroundColor: '#fee2e2',
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 8,
         alignItems: 'flex-end',
         justifyContent: 'center'
     },
-    statusText: { color: '#9348cc', fontWeight: 'bold', fontSize: 11 },
+    statusText: { color: '#dc2626', fontWeight: 'bold', fontSize: 11 },
     activeUntilText: { color: '#64748b', fontSize: 10, marginTop: 1 }
 });

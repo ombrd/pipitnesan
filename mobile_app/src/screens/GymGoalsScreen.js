@@ -40,7 +40,7 @@ export default function GymGoalsScreen({ navigation }) {
         goal.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (loading) return <View style={styles.center}><ActivityIndicator color="#9348cc" size="large" /></View>;
+    if (loading) return <View style={styles.center}><ActivityIndicator color="#dc2626" size="large" /></View>;
 
     return (
         <View style={styles.container}>
@@ -68,7 +68,7 @@ export default function GymGoalsScreen({ navigation }) {
                             <Checkbox
                                 status={selectedGoals.includes(item.id) ? 'checked' : 'unchecked'}
                                 onPress={() => toggleGoal(item.id)}
-                                color="#9348cc"
+                                color="#dc2626"
                             />
                         </Card.Content>
                     </Card>
@@ -81,7 +81,7 @@ export default function GymGoalsScreen({ navigation }) {
                     onPress={getRecommendations}
                     disabled={selectedGoals.length === 0}
                     style={styles.button}
-                    buttonColor="#9348cc"
+                    buttonColor="#dc2626"
                 >
                     Find Training Plans ({selectedGoals.length})
                 </Button>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     subHeader: { color: '#64748b', marginBottom: 20 },
     search: { marginBottom: 16, borderRadius: 12, backgroundColor: '#fff' },
     card: { marginBottom: 12, backgroundColor: '#fff', borderRadius: 12, elevation: 2 },
-    selectedCard: { borderColor: '#9348cc', borderWidth: 1 },
+    selectedCard: { borderColor: '#dc2626', borderWidth: 1 },
     cardContent: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
     goalName: { fontWeight: '600' },
     category: { color: '#64748b', marginTop: 2 },

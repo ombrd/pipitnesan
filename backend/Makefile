@@ -16,7 +16,11 @@ setup:
 	@echo "Waiting for container to be ready..."
 	sleep 5
 	@echo "Generating app key and running migrations..."
-	./vendor/bin/sail artisan key:generate
+	@if grep -q "APP_KEY=base64" .env 2>/dev/null; then \
+		echo "APP_KEY already exists. Skipping key generation."; \
+	else \
+		./vendor/bin/sail artisan key:generate; \
+	fi
 	./vendor/bin/sail artisan migrate --force
 	@echo "Installing and building Node.js assets..."
 	./vendor/bin/sail npm install
@@ -43,6 +47,10 @@ restart:
 # Target untuk masuk ke dalam terminal container aplikasi
 shell:
 	./vendor/bin/sail shell
+
+# Target untuk menjalankan database migrations
+migrate:
+	./vendor/bin/sail artisan migrate
 
 # Target untuk mempublish aplikasi ke public menggunakan Ngrok
 share:

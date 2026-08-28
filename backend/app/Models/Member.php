@@ -143,7 +143,7 @@ class Member extends Authenticatable implements \OwenIt\Auditing\Contracts\Audit
             if (empty($member->member_number)) {
                 $latest = static::where('branch_id', $member->branch_id)->orderBy('id', 'desc')->first();
                 $nextNum = 1;
-                if ($latest && preg_match('/(\d{7})$/', $member->member_number, $matches)) {
+                if ($latest && preg_match('/(\d{7})$/', (string) $latest->member_number, $matches)) {
                     $nextNum = intval($matches[1]) + 1;
                 }
                 $branchCode = $member->branch ? $member->branch->code : '000';

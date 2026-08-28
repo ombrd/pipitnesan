@@ -28,7 +28,7 @@ export default function ExercisesScreen() {
         ex.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (loading) return <View style={styles.center}><ActivityIndicator color="#9348cc" size="large" /></View>;
+    if (loading) return <View style={styles.center}><ActivityIndicator color="#dc2626" size="large" /></View>;
 
     return (
         <View style={styles.container}>
@@ -47,7 +47,7 @@ export default function ExercisesScreen() {
                         <List.Item
                             title={item.name}
                             description={item.category}
-                            left={props => <Avatar.Icon {...props} icon="dumbbell" backgroundColor="#f5f3ff" color="#9348cc" size={48} />}
+                            left={props => <Avatar.Icon {...props} icon="dumbbell" backgroundColor="#fee2e2" color="#dc2626" size={48} />}
                             titleStyle={{ fontWeight: 'bold' }}
                         />
                         <Card.Content>

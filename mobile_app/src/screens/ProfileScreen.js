@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Text, List, Button, Avatar, Divider, Dialog, Portal } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
-import api from '../services/api';
+import api, { clearLocalSession } from '../services/api';
 
 /**
  * Deskripsi singkat:
@@ -60,7 +60,8 @@ export default function ProfileScreen({ navigation }) {
 
     /**
      * Deskripsi singkat:
-     * Melakukan proses konfirmasi logout dengan memanggil API backend dan menghapus token lokal.
+     * Melakukan proses konfirmasi logout dengan memanggil API backend dan menghapus token lokal
+     * (memori + tabel SQLite `session` agar Quick Login biometrik tidak memulihkan token lama).
      * Setelah token dihapus, user akan diarahkan kembali ke layar Login.
      */
     const confirmLogout = async () => {
@@ -70,7 +71,7 @@ export default function ProfileScreen({ navigation }) {
         } catch (e) {
             console.log('Logout API error, forcing local logout:', e);
         }
-        global.userToken = null;
+        clearLocalSession();
         navigation.reset({
             index: 0,
             routes: [{ name: 'Login' }],
@@ -118,9 +119,9 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f1f5f9' },
     header: { alignItems: 'center', padding: 32, backgroundColor: '#fff' },
-    avatar: { backgroundColor: '#9348cc', marginBottom: 16 },
+    avatar: { backgroundColor: '#dc2626', marginBottom: 16 },
     name: { fontWeight: 'bold', color: '#0f172a' },
-    status: { color: '#7B68EE', fontWeight: 'bold', marginTop: 4 },
+    status: { color: '#dc2626', fontWeight: 'bold', marginTop: 4 },
     section: { backgroundColor: '#fff', marginTop: 16 },
     logoutBtn: { margin: 24, borderRadius: 8 },
     modalContent: { backgroundColor: 'white', padding: 24, margin: 20, borderRadius: 12 }

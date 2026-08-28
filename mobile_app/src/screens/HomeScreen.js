@@ -132,7 +132,7 @@ export default function HomeScreen({ navigation }) {
     if (loading) {
         return (
             <View style={[styles.container, { justifyContent: 'center' }]}>
-                <ActivityIndicator size="large" color="#9348cc" />
+                <ActivityIndicator size="large" color="#dc2626" />
             </View>
         );
     }
@@ -146,7 +146,7 @@ export default function HomeScreen({ navigation }) {
             <Text variant="titleMedium" style={styles.sectionTitle}>Gym Training</Text>
             <View style={styles.featuresRow}>
                 <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('GymGoals')}>
-                    <Avatar.Icon size={50} icon="target" backgroundColor="#f5f3ff" color="#9348cc" />
+                    <Avatar.Icon size={50} icon="target" backgroundColor="#fee2e2" color="#dc2626" />
                     <Text variant="bodySmall" style={styles.featureText}>Set Goals</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.featureItem} onPress={() => navigation.navigate('TrainingPlans')}>
@@ -172,7 +172,7 @@ export default function HomeScreen({ navigation }) {
                         onPress={() => handleBranchSelect(branch)}
                     >
                         <Card.Content style={styles.ptCardContent}>
-                            <List.Icon icon="map-marker-outline" color={selectedBranch?.id === branch.id ? '#9348cc' : '#334155'} />
+                            <List.Icon icon="map-marker-outline" color={selectedBranch?.id === branch.id ? '#dc2626' : '#334155'} />
                             <Text variant="bodyMedium" style={{ marginTop: 2, fontWeight: 'bold' }}>{branch.name}</Text>
                         </Card.Content>
                     </Card>
@@ -191,7 +191,7 @@ export default function HomeScreen({ navigation }) {
                             onPress={() => handleTrainerSelect(pt)}
                         >
                             <Card.Content style={styles.ptCardContent}>
-                                <Avatar.Text size={50} label={pt.name.substring(0, 2).toUpperCase()} style={{ backgroundColor: '#e9d5ff' }} />
+                                <Avatar.Text size={50} label={pt.name.substring(0, 2).toUpperCase()} style={{ backgroundColor: '#fee2e2' }} />
                                 <Text variant="bodyMedium" style={{ marginTop: 8, fontWeight: 'bold' }}>{pt.name}</Text>
                             </Card.Content>
                         </Card>
@@ -220,7 +220,7 @@ export default function HomeScreen({ navigation }) {
                             right={props => (
                                 <Button
                                     mode="contained"
-                                    buttonColor="#9348cc"
+                                    buttonColor="#dc2626"
                                     style={{ borderRadius: 25 }}
                                     onPress={() => promptBookSchedule(schedule.id)}>
                                     Book
@@ -240,7 +240,7 @@ export default function HomeScreen({ navigation }) {
                     <Calendar
                         onDayPress={handleDateSelect}
                         markedDates={{
-                            [selectedDate]: { selected: true, disableTouchEvent: true, selectedColor: '#9348cc' }
+                            [selectedDate]: { selected: true, disableTouchEvent: true, selectedColor: '#dc2626' }
                         }}
                         minDate={format(new Date(), 'yyyy-MM-dd')}
                     />
@@ -255,7 +255,7 @@ export default function HomeScreen({ navigation }) {
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={() => setBookingDialogVisible(false)}>Cancel</Button>
-                        <Button onPress={confirmBookSchedule} mode="contained" buttonColor="#9348cc" style={{ borderRadius: 25 }}>Yes, Book It</Button>
+                        <Button onPress={confirmBookSchedule} mode="contained" buttonColor="#dc2626" style={{ borderRadius: 25 }}>Yes, Book It</Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     card: { marginBottom: 12, backgroundColor: '#fff' },
     ptList: { marginBottom: 24 },
     ptCard: { marginRight: 12, width: 120, backgroundColor: '#fff' },
-    ptCardSelected: { borderColor: '#9348cc', borderWidth: 2 },
+    ptCardSelected: { borderColor: '#dc2626', borderWidth: 2 },
     ptCardContent: { alignItems: 'center' },
     featuresRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24, backgroundColor: '#fff', padding: 16, borderRadius: 16, elevation: 2 },
     featureItem: { alignItems: 'center', width: '22%' },

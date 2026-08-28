@@ -4,10 +4,8 @@ import { Text, TextInput, Button, Dialog, Portal } from 'react-native-paper';
 
 const { width, height } = Dimensions.get("window");
 import ReactNativeBiometrics from 'react-native-biometrics';
-import SQLite from 'react-native-sqlite-storage';
 import api from '../services/api';
-
-const db = SQLite.openDatabase({ name: 'pipitnesan.db', location: 'default' }, () => { }, error => console.log(error));
+import { initSessionTable, saveTokens, getTokens } from '../utils/tokenStorage';
 
 /**
  * Deskripsi singkat:
@@ -31,9 +29,8 @@ export default function LoginScreen({ navigation }) {
     const rnBiometrics = new ReactNativeBiometrics();
 
     useEffect(() => {
-        db.transaction(tx => {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT)');
-        });
+        // Inisialisasi tabel session (dengan kolom refresh_token)
+        initSessionTable().catch(err => console.warn('[LoginScreen] initSessionTable error:', err));
 
         rnBiometrics.isSensorAvailable()
             .then((resultObject) => {
@@ -67,13 +64,15 @@ export default function LoginScreen({ navigation }) {
                 password
             });
 
-            global.userToken = response.data.access_token;
+            const accessToken = response.data.access_token;
+            const refreshToken = response.data.refresh_token;
 
-            db.transaction(tx => {
-                tx.executeSql('DELETE FROM session', [], () => {
-                    tx.executeSql('INSERT INTO session (token) VALUES (?)', [response.data.access_token]);
-                });
-            });
+            // Simpan kedua token ke global state (dipakai oleh interceptor api.js)
+            global.userToken = accessToken;
+            global.refreshToken = refreshToken;
+
+            // Simpan kedua token ke SQLite agar bisa di-restore saat app dibuka kembali
+            await saveTokens(accessToken, refreshToken);
 
             navigation.replace('MainTabs');
 
@@ -98,16 +97,15 @@ export default function LoginScreen({ navigation }) {
             const { success } = await rnBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint to login' });
 
             if (success) {
-                db.transaction(tx => {
-                    tx.executeSql('SELECT token FROM session LIMIT 1', [], (tx, results) => {
-                        if (results.rows.length > 0) {
-                            global.userToken = results.rows.item(0).token;
-                            navigation.replace('MainTabs');
-                        } else {
-                            Alert.alert('Authentication Failed', 'No saved session found. Please log in with your password first.');
-                        }
-                    });
-                });
+                const { accessToken, refreshToken } = await getTokens();
+                if (accessToken && refreshToken) {
+                    // Restore kedua token ke global state
+                    global.userToken = accessToken;
+                    global.refreshToken = refreshToken;
+                    navigation.replace('MainTabs');
+                } else {
+                    Alert.alert('Authentication Failed', 'No saved session found. Please log in with your password first.');
+                }
             } else {
                 Alert.alert('Authentication', 'Biometric login cancelled');
             }
@@ -136,7 +134,7 @@ export default function LoginScreen({ navigation }) {
                         mode="outlined"
                         style={styles.input}
                         autoCapitalize="none"
-                        theme={{ roundness: 25, colors: { primary: '#9348cc' } }}
+                        theme={{ roundness: 25, colors: { primary: '#dc2626' } }}
                     />
 
                     <TextInput
@@ -146,7 +144,7 @@ export default function LoginScreen({ navigation }) {
                         mode="outlined"
                         style={styles.input}
                         secureTextEntry
-                        theme={{ roundness: 25, colors: { primary: '#9348cc' } }}
+                        theme={{ roundness: 25, colors: { primary: '#dc2626' } }}
                     />
 
                     <TouchableOpacity
@@ -173,7 +171,7 @@ export default function LoginScreen({ navigation }) {
                     <View style={styles.footer}>
                         <Text style={{ color: '#000' }}>Don't have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                            <Text style={{ color: '#9348cc', fontWeight: 'bold' }}>Register</Text>
+                            <Text style={{ color: '#dc2626', fontWeight: 'bold' }}>Register</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        color: '#9348cc',
+        color: '#dc2626',
         fontSize: 32,
     },
     subtitle: {
@@ -224,7 +222,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     formButton: {
-        backgroundColor: "rgba(123,104,238,0.9)",
+        backgroundColor: "rgba(220,38,38,0.9)",
         height: 55,
         alignItems: "center",
         justifyContent: "center",
@@ -261,7 +259,7 @@ const styles = StyleSheet.create({
     googleButtonText: {
         fontSize: 16,
         fontWeight: "600",
-        color: "#9348cc",
+        color: "#dc2626",
         letterSpacing: 0.5,
     },
     footer: {

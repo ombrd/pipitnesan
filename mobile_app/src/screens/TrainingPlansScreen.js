@@ -28,7 +28,7 @@ export default function TrainingPlansScreen() {
         plan.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    if (loading) return <View style={styles.center}><ActivityIndicator color="#9348cc" size="large" /></View>;
+    if (loading) return <View style={styles.center}><ActivityIndicator color="#dc2626" size="large" /></View>;
 
     return (
         <View style={styles.container}>
@@ -52,8 +52,8 @@ export default function TrainingPlansScreen() {
                         <Card.Content>
                             <Text variant="bodyMedium" style={styles.description}>{item.description || 'No description available.'}</Text>
                             <View style={styles.chipContainer}>
-                                <Chip icon="dumbbell" style={styles.chip} textStyle={{ color: '#9348cc' }}>{item.exercises?.length || 0} Exercises</Chip>
-                                <Chip icon="target" style={styles.chip} textStyle={{ color: '#9348cc' }}>{item.goals?.length || 0} Goals</Chip>
+                                <Chip icon="dumbbell" style={styles.chip} textStyle={{ color: '#dc2626' }}>{item.exercises?.length || 0} Exercises</Chip>
+                                <Chip icon="target" style={styles.chip} textStyle={{ color: '#dc2626' }}>{item.goals?.length || 0} Goals</Chip>
                             </View>
                         </Card.Content>
                     </Card>
@@ -70,5 +70,5 @@ const styles = StyleSheet.create({
     card: { marginBottom: 12, backgroundColor: '#fff', borderRadius: 12, elevation: 2 },
     description: { color: '#334155' },
     chipContainer: { flexDirection: 'row', marginTop: 12 },
-    chip: { marginRight: 8, backgroundColor: '#f5f3ff', borderRadius: 8 }
+    chip: { marginRight: 8, backgroundColor: '#fee2e2', borderRadius: 8 }
 });

@@ -15,18 +15,22 @@ import api from '../services/api';
 export default function CheckInScreen() {
     const [qrData, setQrData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [timeLeft, setTimeLeft] = useState(0);
 
     /**
      * Deskripsi singkat:
      * Mengambil data token QR Code baru dari server backend.
      * Token ini nantinya akan di-render menjadi QR Code menggunakan library react-native-qrcode-svg.
+     * Pesan error dari backend (mis. "Membership is not active") ditampilkan ke user
+     * agar penyebab kegagalan jelas, bukan sekadar "Error loading QR Code".
      *
      * Contoh penggunaan:
      * fetchQRCode() dipicu saat layar pertama kali dibuka atau saat timer habis.
      */
     const fetchQRCode = async () => {
         setLoading(true);
+        setError(null);
         try {
             const response = await api.get('/qr/generate');
             const data = response.data;
@@ -37,6 +41,11 @@ export default function CheckInScreen() {
             }
         } catch (error) {
             console.error('Failed to fetch QR', error);
+            setError(
+                error?.response?.data?.error ||
+                error?.message ||
+                'Failed to load QR Code'
+            );
         } finally {
             setLoading(false);
         }
@@ -69,7 +78,7 @@ export default function CheckInScreen() {
 
             <View style={styles.qrContainer}>
                 {loading ? (
-                    <ActivityIndicator size="large" color="#9348cc" />
+                    <ActivityIndicator size="large" color="#dc2626" />
                 ) : qrData ? (
                     <QRCode
                         value={qrData}
@@ -78,7 +87,23 @@ export default function CheckInScreen() {
                         backgroundColor="white"
                     />
                 ) : (
-                    <Text>Error loading QR Code</Text>
+                    <View style={styles.errorContainer}>
+                        <Text variant="titleMedium" style={styles.errorTitle}>
+                            Unable to generate QR Code
+                        </Text>
+                        {error === 'Membership is not active' ? (
+                            <>
+                                <Text style={styles.errorText}>
+                                    Your membership is not active.
+                                </Text>
+                                <Text style={styles.errorText}>
+                                    Please renew your membership at the receptionist to check in.
+                                </Text>
+                            </>
+                        ) : (
+                            <Text style={styles.errorText}>{error}</Text>
+                        )}
+                    </View>
                 )}
             </View>
 
@@ -91,7 +116,7 @@ export default function CheckInScreen() {
                 onPress={fetchQRCode}
                 style={styles.refreshBtn}
                 disabled={loading}
-                buttonColor="#9348cc"
+                buttonColor="#dc2626"
             >
                 Manual Refresh
             </Button>
@@ -122,10 +147,25 @@ const styles = StyleSheet.create({
         elevation: 5,
         marginBottom: 24
     },
+    errorContainer: {
+        alignItems: 'center',
+        paddingHorizontal: 24,
+    },
+    errorTitle: {
+        fontWeight: 'bold',
+        color: '#0f172a',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    errorText: {
+        color: '#64748b',
+        textAlign: 'center',
+        marginBottom: 4,
+    },
     timerText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#7B68EE',
+        color: '#dc2626',
         marginBottom: 24
     },
     refreshBtn: {

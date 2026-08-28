@@ -107,6 +107,8 @@ return [
         ),
     ],
 
+    'db_encryption_key' => env('DB_ENCRYPTION_KEY', 'base64:RTw4XWkIRvVoo4zoGwO4uvtLOU5fCBwU8egV5heQ2Yc='),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

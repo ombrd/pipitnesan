@@ -18,19 +18,24 @@ use App\Http\Controllers\Api\VisitController;
 |
 */
 
+// --- Public Routes (tidak perlu token) ---
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
 Route::get('promotions', [App\Http\Controllers\Api\PromotionController::class, 'index']);
 
+// Refresh endpoint di luar middleware auth:api karena Access Token sudah expired saat ini dipanggil.
+// Validasi dilakukan melalui Refresh Token opaque yang ada di request body.
+Route::post('refresh', [AuthController::class, 'refresh']);
+
+// --- Protected Routes (membutuhkan Access Token yang valid) ---
 Route::group(['middleware' => 'auth:api'], function () {
 
     // Auth & Profile
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me']);
     Route::put('me', [AuthController::class, 'updateProfile']);
-    
+
     // QR Attendance Payload Generation
     Route::get('qr/generate', [AuthController::class, 'generateQR']);
 
@@ -50,7 +55,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('gym/exercises', [\App\Http\Controllers\Api\GymController::class, 'getExercises']);
     Route::post('gym/recommendations', [\App\Http\Controllers\Api\GymController::class, 'getRecommendations']);
     Route::post('gym/select-plan', [\App\Http\Controllers\Api\GymController::class, 'selectPlan']);
-    
+
     // Activity History
     Route::get('gym/history', [\App\Http\Controllers\Api\ActivityController::class, 'getHistory']);
     Route::post('gym/log-activity', [\App\Http\Controllers\Api\ActivityController::class, 'logActivity']);

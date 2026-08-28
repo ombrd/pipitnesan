@@ -119,7 +119,7 @@ export default function RegisterScreen({ navigation }) {
                             size={28}
                             onPress={() => setSelectedPromotion(null)}
                             style={{ position: 'absolute', left: 0, top: 0, margin: 0 }}
-                            iconColor="#9348cc"
+                            iconColor="#dc2626"
                         />
                     )}
                     <View style={{ flex: 1, alignItems: 'center' }}>
@@ -130,7 +130,7 @@ export default function RegisterScreen({ navigation }) {
 
                 {!selectedPromotion ? (
                     <View style={styles.formContainer}>
-                        {fetchingData ? <ActivityIndicator size="large" color="#9348cc" /> : (
+                        {fetchingData ? <ActivityIndicator size="large" color="#dc2626" /> : (
                             promotions.map(promo => (
                                 <Card key={promo.id} style={styles.promoCard} onPress={() => setSelectedPromotion(promo)}>
                                     <List.Item
@@ -147,23 +147,23 @@ export default function RegisterScreen({ navigation }) {
                         <View style={styles.footer}>
                             <Text style={{ color: '#000' }}>Already a member? </Text>
                             <TouchableOpacity onPress={() => navigation.goBack()}>
-                                <Text style={{ color: '#9348cc', fontWeight: 'bold' }}>Login</Text>
+                                <Text style={{ color: '#dc2626', fontWeight: 'bold' }}>Login</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 ) : (
                     <View style={styles.formContainer}>
-                        <Card style={{ marginBottom: 20, backgroundColor: '#fdf4ff', borderColor: '#d8b4fe', borderWidth: 1 }}>
+                        <Card style={{ marginBottom: 20, backgroundColor: '#fef2f2', borderColor: '#fecaca', borderWidth: 1 }}>
                             <Card.Content>
-                                <Text style={{ fontWeight: 'bold', color: '#9348cc', fontSize: 16, marginBottom: 4 }}>Selected Package: {selectedPromotion.name}</Text>
+                                <Text style={{ fontWeight: 'bold', color: '#dc2626', fontSize: 16, marginBottom: 4 }}>Selected Package: {selectedPromotion.name}</Text>
                                 <Text style={{ color: '#475569', fontSize: 14 }}>Commitment: {selectedPromotion.duration_days} Days</Text>
                                 <Text style={{ color: '#475569', fontSize: 14 }}>Price: Rp {parseFloat(selectedPromotion.price).toLocaleString('en-US')}</Text>
                             </Card.Content>
                         </Card>
 
-                        <TextInput label="ID Card Number (NIK) *" value={form.id_card_number} onChangeText={t => setForm({ ...form, id_card_number: t })} mode="outlined" style={styles.input} keyboardType="numeric" theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
-                        <TextInput label="Full Name *" value={form.name} onChangeText={t => setForm({ ...form, name: t })} mode="outlined" style={styles.input} theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
-                        <TextInput label="Birth Place *" value={form.birth_place} onChangeText={t => setForm({ ...form, birth_place: t })} mode="outlined" style={styles.input} theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
+                        <TextInput label="ID Card Number (NIK) *" value={form.id_card_number} onChangeText={t => setForm({ ...form, id_card_number: t })} mode="outlined" style={styles.input} keyboardType="numeric" theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
+                        <TextInput label="Full Name *" value={form.name} onChangeText={t => setForm({ ...form, name: t })} mode="outlined" style={styles.input} theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
+                        <TextInput label="Birth Place *" value={form.birth_place} onChangeText={t => setForm({ ...form, birth_place: t })} mode="outlined" style={styles.input} theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
 
                         <TouchableOpacity onPress={() => setCalendarVisible(true)}>
                             <TextInput
@@ -173,11 +173,11 @@ export default function RegisterScreen({ navigation }) {
                                 style={styles.input}
                                 editable={false}
                                 right={<TextInput.Icon icon="calendar" />}
-                                theme={{ roundness: 25, colors: { primary: '#9348cc' } }}
+                                theme={{ roundness: 25, colors: { primary: '#dc2626' } }}
                             />
                         </TouchableOpacity>
 
-                        <TextInput label="Address *" value={form.address} onChangeText={t => setForm({ ...form, address: t })} mode="outlined" style={styles.input} multiline numberOfLines={3} theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
+                        <TextInput label="Address *" value={form.address} onChangeText={t => setForm({ ...form, address: t })} mode="outlined" style={styles.input} multiline numberOfLines={3} theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
 
                         <TouchableOpacity onPress={() => setBranchModalVisible(true)}>
                             <TextInput
@@ -187,13 +187,13 @@ export default function RegisterScreen({ navigation }) {
                                 style={styles.input}
                                 editable={false}
                                 right={<TextInput.Icon icon="chevron-down" />}
-                                theme={{ roundness: 25, colors: { primary: '#9348cc' } }}
+                                theme={{ roundness: 25, colors: { primary: '#dc2626' } }}
                             />
                         </TouchableOpacity>
 
-                        <TextInput label="Phone Number *" value={form.phone} onChangeText={t => setForm({ ...form, phone: t })} mode="outlined" style={styles.input} keyboardType="phone-pad" theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
-                        <TextInput label="Email *" value={form.email} onChangeText={t => setForm({ ...form, email: t })} mode="outlined" style={styles.input} autoCapitalize="none" keyboardType="email-address" theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
-                        <TextInput label="Password *" value={form.password} onChangeText={t => setForm({ ...form, password: t })} mode="outlined" style={styles.input} secureTextEntry theme={{ roundness: 25, colors: { primary: '#9348cc' } }} />
+                        <TextInput label="Phone Number *" value={form.phone} onChangeText={t => setForm({ ...form, phone: t })} mode="outlined" style={styles.input} keyboardType="phone-pad" theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
+                        <TextInput label="Email *" value={form.email} onChangeText={t => setForm({ ...form, email: t })} mode="outlined" style={styles.input} autoCapitalize="none" keyboardType="email-address" theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
+                        <TextInput label="Password *" value={form.password} onChangeText={t => setForm({ ...form, password: t })} mode="outlined" style={styles.input} secureTextEntry theme={{ roundness: 25, colors: { primary: '#dc2626' } }} />
 
                         <TouchableOpacity
                             style={styles.formButton}
@@ -235,11 +235,11 @@ export default function RegisterScreen({ navigation }) {
                     <Calendar
                         onDayPress={handleDateSelect}
                         markedDates={{
-                            [form.birth_date]: { selected: true, selectedColor: '#9348cc' }
+                            [form.birth_date]: { selected: true, selectedColor: '#dc2626' }
                         }}
                         theme={{
-                            todayTextColor: '#9348cc',
-                            arrowColor: '#9348cc',
+                            todayTextColor: '#dc2626',
+                            arrowColor: '#dc2626',
                         }}
                     />
                 </Modal>
@@ -257,7 +257,7 @@ export default function RegisterScreen({ navigation }) {
                                 title={branch.name}
                                 description={branch.address}
                                 onPress={() => selectBranch(branch)}
-                                left={props => <List.Icon {...props} icon="map-marker-outline" color="#9348cc" />}
+                                left={props => <List.Icon {...props} icon="map-marker-outline" color="#dc2626" />}
                                 style={{ borderBottomWidth: 1, borderBottomColor: '#f1f5f9' }}
                             />
                         ))}
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        color: '#9348cc',
+        color: '#dc2626',
         fontSize: 32,
     },
     subtitle: {
@@ -300,14 +300,14 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         backgroundColor: '#fff',
         borderLeftWidth: 4,
-        borderLeftColor: '#9348cc',
+        borderLeftColor: '#dc2626',
     },
     input: {
         marginBottom: 16,
         backgroundColor: '#fff',
     },
     formButton: {
-        backgroundColor: "rgba(123,104,238,0.9)",
+        backgroundColor: "rgba(220,38,38,0.9)",
         height: 55,
         alignItems: "center",
         justifyContent: "center",

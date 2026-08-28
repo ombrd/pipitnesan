@@ -33,6 +33,7 @@ class AccountOfficer extends Model implements \OwenIt\Auditing\Contracts\Auditab
         'active_date' => 'date',
         'phone' => 'encrypted',
     ];
+
     
     /**
      * Relasi: AccountOfficer milik satu Branch (Cabang).
