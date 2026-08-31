@@ -10,7 +10,9 @@ ARG WWWUSER=1000
 
 WORKDIR /var/www/html
 
-ENV TZ=UTC
+# Must match APP_TIMEZONE in .env so that Carbon::now() (used by the scheduler in
+# routes/console.php and the auto_checkout_time comparison) lines up with local wall clock.
+ENV TZ=Asia/Jakarta
 ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php84 -d variables_order=EGPCS /var/www/html/artisan octane:start --server=frankenphp --host=0.0.0.0 --port=80 --admin-port=2019"
 ENV SUPERVISOR_PHP_USER="sail"
 
