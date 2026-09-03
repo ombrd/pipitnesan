@@ -2,6 +2,7 @@
 
 if "%~1"=="install" goto install
 if "%~1"=="start" goto start
+if "%~1"=="stop-metro" goto stop_metro
 if "%~1"=="android" goto android
 if "%~1"=="ios" goto ios
 if "%~1"=="build-android-debug" goto build_android_debug
@@ -11,11 +12,18 @@ if "%~1"=="clean" goto clean
 if "%~1"=="clean-android" goto clean_android
 if "%~1"=="clean-ios" goto clean_ios
 
-echo Usage: make.bat [install^|start^|android^|ios^|build-android-debug^|build-android-release^|build-android-bundle^|clean^|clean-android^|clean-ios]
+echo Usage: make.bat [install^|start^|stop-metro^|android^|ios^|build-android-debug^|build-android-release^|build-android-bundle^|clean^|clean-android^|clean-ios]
 goto :eof
 
 :install
 call npm install
+goto :eof
+
+:stop_metro
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8081" ^| findstr "LISTENING"') do (
+    taskkill /PID %%a /F >nul 2>&1
+)
+echo Metro dev server stopped.
 goto :eof
 
 :start
@@ -23,6 +31,13 @@ call npm start
 goto :eof
 
 :android
+rem Auto-start Metro if not already running on port 8081.
+netstat -ano | findstr ":8081" | findstr "LISTENING" >nul 2>&1
+if errorlevel 1 (
+    echo Metro dev server not running - starting it in the background (logs: metro.log)
+    start "" /b npx react-native start ^> metro.log 2^>^&1
+    timeout /t 5 /nobreak >nul
+)
 call npm run android
 goto :eof
 

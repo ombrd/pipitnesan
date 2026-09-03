@@ -7,4 +7,4 @@
  * - Perangkat fisik + backend lokal (LAN)   : 'http://<IP-komputer-anda>/api'
  * - Tunnel publik Ngrok (make share)        : 'https://<subdomain-anda>.ngrok-free.app/api'
  */
-export const API_BASE_URL = 'https://karol-uninfringed-gaye.ngrok-free.dev/api';
+export const API_BASE_URL = 'https://despotically-nonempirical-cathryn.ngrok-free.dev/api';

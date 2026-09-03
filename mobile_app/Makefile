@@ -11,7 +11,7 @@ endif
 # Install dependencies for both JS and iOS
 install:
 	npm install
-	cd ios && pod install
+	-cd ios && pod install
 
 # Start the Metro bundler
 start:
